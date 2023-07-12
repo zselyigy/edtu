@@ -4,10 +4,10 @@ import random
 class dataseries():
     def __init__(self, speciesname):
         self.speciesname = speciesname
-        self.mydataseries = []
+        self.mydatapoints = []
 
-    def add_dataseries(self, data):
-        self.mydataseries.append(data)
+    def add_datapoints(self, data):
+        self.mydatapoints.append(data)
 
 class xmlfile():
     def __init__(self, name):
@@ -22,8 +22,8 @@ class xmlfile():
         except ValueError:
             self.myspecieslist.append(mydata[1])
             speciesindex = self.myspecieslist.index(mydata[1])
-        self.mydataseries.append(dataseries(mydata[1]))
-        self.mydataseries[speciesindex].add_dataseries(mydata[2:13])
+            self.mydataseries.append(dataseries(mydata[1]))
+        self.mydataseries[speciesindex].add_datapoints(mydata[2:13])
         
 
 
@@ -59,6 +59,8 @@ def main():
                         xmls.append(xmlfile(mydata[0]))
                         xmls[no_xmls].addpoint(mydata)
                         no_xmls = no_xmls + 1
+                    else:
+                        xmls[no_xmls-1].addpoint(mydata)
     results_file.close()
     no_datapoints = len(concentrations)
     print('Number of datapoints in the simulation results file: ', no_datapoints)
