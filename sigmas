@@ -2749,14 +2749,14 @@ x30208031                        5              HCN        abs     2.450E-05    
 x30208031                        6              HCN        abs     2.450E-05     mole fraction
 x30208031                        7              HCN        abs     2.450E-05     mole fraction
 x30208031                        8              HCN        abs     2.450E-05     mole fraction
-x30208032                        6              HCN        abs     2.240E-05     mole fraction
-x30208032                        7              HCN        abs     2.240E-05     mole fraction
-x30208032                        8              HCN        abs     2.240E-05     mole fraction
 x30208032                        1              NO         abs     6.970E-05     mole fraction
 x30208032                        2              NO         abs     4.370E-05     mole fraction
 x30208032                        3              NO         abs     5.292E-06     mole fraction
 x30208032                        4              NO         abs     2.525E-05     mole fraction
 x30208032                        5              NO         abs     4.234E-06     mole fraction
+x30208032                        6              HCN        abs     2.240E-05     mole fraction
+x30208032                        7              HCN        abs     2.240E-05     mole fraction
+x30208032                        8              HCN        abs     2.240E-05     mole fraction
 x30208033                        1              NO         abs     3.908E-05     mole fraction
 x30208033                        2              NO         abs     2.713E-05     mole fraction
 x30208033                        3              NO         abs     2.041E-05     mole fraction
