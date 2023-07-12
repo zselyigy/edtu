@@ -1,6 +1,33 @@
 import numpy
 import random
 
+class dataseries():
+    def __init__(self, speciesname):
+        self.speciesname = speciesname
+        self.mydataseries = []
+
+    def add_dataseries(self, data):
+        self.mydataseries.append(data)
+
+class xmlfile():
+    def __init__(self, name):
+        self.xmlname = name
+        self.myspecieslist = []
+        self.mydataseries = []
+
+    def addpoint(self, mydata):
+#        mydata[name, species, pointnumber, nominalvalue, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10]
+        try:
+            speciesindex = self.myspecieslist.index(mydata[1])
+        except ValueError:
+            self.myspecieslist.append(mydata[1])
+            speciesindex = self.myspecieslist.index(mydata[1])
+        self.mydataseries.append(dataseries(mydata[1]))
+        self.mydataseries[speciesindex].add_dataseries(mydata[2:13])
+        
+
+
+
 def main():
     print('edtu program started.')
 # constans fixed in the code
@@ -10,7 +37,9 @@ def main():
 # reading the simulation results file
     print('Reading concentration file', my_filename_c)
     concentrations = []
+    xmls = []
     i = 0
+    no_xmls = 0
     with open(my_filename_c,'r') as results_file:
         for line in results_file:
             i = i + 1
@@ -21,6 +50,15 @@ def main():
                 mystr2 = mystr2.strip()
                 mydata = [mystr1, mystr2, int(line[31:38]), float(line[40:53]), float(line[53:66]), float(line[66:79]), float(line[79:92]), float(line[92:105]), float(line[105:118]), float(line[118:131]), float(line[131:144]), float(line[144:157]), float(line[157:170]), float(line[170:183]), float(line[183:196])]
                 concentrations.append(mydata)
+                if no_xmls == 0:
+                    xmls.append(xmlfile(mydata[0]))
+                    xmls[no_xmls].addpoint(mydata)
+                    no_xmls = no_xmls + 1
+                else:
+                    if xmls[no_xmls-1].xmlname != mydata[0]:
+                        xmls.append(xmlfile(mydata[0]))
+                        xmls[no_xmls].addpoint(mydata)
+                        no_xmls = no_xmls + 1
     results_file.close()
     no_datapoints = len(concentrations)
     print('Number of datapoints in the simulation results file: ', no_datapoints)
@@ -60,7 +98,6 @@ def main():
     print('Random sample generation started.')
     random_numbers = numpy.empty((stratas,no_datapoints),int)
     for i in range(stratas):
-        print(i)
         for j in range(no_datapoints):
           random_numbers[i][j] = random.randint(0,9)
     print('Random sample generation finished.')
