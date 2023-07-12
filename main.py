@@ -23,6 +23,7 @@ def main():
     sigmas = []
     i = -1
     j = 0
+    error = False
     with open(my_filename,'r') as results_file:
         for line in results_file:
             j = j + 1
@@ -30,17 +31,19 @@ def main():
                 i = i + 1
                 mystr1 = line[0:9]
                 mystr1 = mystr1.strip()
-                mystr2 = line[44:53]
+                mystr2 = line[41:55]
                 mystr2 = mystr2.strip()
-                mydata = [mystr1, int(line[33:36]), mystr2, float(line[67:76])]
+                mydata = [mystr1, int(line[11:39]), mystr2, float(line[67:76])]
                 if mydata[0] != concentrations[i][0]:
                     print('Mismathching xml name at line ', j , 'in sigma file')
-                    return
+                    error = True                    
                 if mydata[1] != concentrations[i][2]:
                     print('Mismathching point number at line ', j , 'in sigma file')
-                    return
+                    error = True
                 if mydata[2] != concentrations[i][1]:
                     print('Mismathching species name at line ', j , 'in sigma file')
+                    error = True
+                if error:
                     return
                 sigmas.append(mydata)
     results_file.close()
