@@ -7,6 +7,12 @@ class dataseries():
         self.mydatapoints = []
 
     def add_datapoint(self, data):
+        # structure of one record for each datapoint
+        #  0 point number
+        #  1 sigma value
+        #  2 experimental value
+        #  3 nominal value
+        #  4-13 the ten T varied value
         self.mydatapoints.append(data)
 
 class xmlfile():
@@ -16,14 +22,13 @@ class xmlfile():
         self.mydataseries = []
 
     def addDataPoint(self, mydata):
-#        mydata[name, species, pointnumber, nominalvalue, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10]
         try:
             speciesindex = self.myspecieslist.index(mydata[1])
         except ValueError:
             self.myspecieslist.append(mydata[1])
             speciesindex = self.myspecieslist.index(mydata[1])
             self.mydataseries.append(dataseries(mydata[1]))
-        self.mydataseries[speciesindex].add_datapoint(mydata[2:13])
+        self.mydataseries[speciesindex].add_datapoint(mydata[2:16])
         
 
 
@@ -67,6 +72,13 @@ def main():
                 mystr1 = mystr1.strip()
                 mystr2 = line[10:31]
                 mystr2 = mystr2.strip()
+                # structure of the simulation results file for each datapoint
+                #  0 xml name
+                #  1 species
+                #  2 point number
+                #  3 experimental value
+                #  4 nominal value
+                #  5-14 the ten T varied value
                 mydata = [mystr1, mystr2, int(line[31:38]), float(line[40:53]), float(line[53:66]), float(line[66:79]), float(line[79:92]), float(line[92:105]), float(line[105:118]), float(line[118:131]), float(line[131:144]), float(line[144:157]), float(line[157:170]), float(line[170:183]), float(line[183:196])]
                 # check if the point is the same as it was in the sigma file
                 if sigmas[i][0] != mydata[0]:
@@ -82,8 +94,14 @@ def main():
                     return
                 concentrations.append(mydata)
 
-                # put the new data point in the structure
-                # let us recover the corresponding sigma value by linear point number - should be rewritten to proper search later
+                # structure of the adddata for each datapoint
+                #  0 xml name
+                #  1 species
+                #  2 point number
+                #  3 sigma value
+                #  4 experimental value
+                #  5 nominal value
+                #  6-15 the ten T varied value
                 adddata = [mydata[0], mydata[1], mydata[2], sigmas[i][3], mydata[3], mydata[4], mydata[5], mydata[6], mydata[7], mydata[8], mydata[9], mydata[10], mydata[11], mydata[12], mydata[13], mydata[14]]   # let us compose the sigma value and the data series
                 if no_xmls == 0:
                     xmls.append(xmlfile(mydata[0]))
@@ -102,13 +120,52 @@ def main():
     if no_datapoints != len(sigmas):
         print('Different number of datapoints in the simulation results and the sigmas files.')
 
+    # generation of the random samples
     print('Random sample generation started.')
     random_numbers = numpy.empty((stratas,no_datapoints),int)
-    for i in range(stratas):
-        for j in range(no_datapoints):
-          random_numbers[i][j] = random.randint(0,9)
+    for s in range(stratas):
+        for k in range(no_datapoints):
+          random_numbers[s][k] = random.randint(0,9)
     print('Random sample generation finished.')
-        
+
+
+    # calculation of the overall E value for the nominal values
+    Etotal = 0
+    Exml = 0
+    Edataseries = 0
+    l = -1
+    for i in range(len(xmls)):
+        for j in range(len(xmls[i].mydataseries)):
+            for k in range(len(xmls[i].mydataseries[j].mydatapoints)):
+                l = l + 1
+                E = ((xmls[i].mydataseries[j].mydatapoints[k][4+random_numbers[s][l]] - xmls[i].mydataseries[j].mydatapoints[k][2]) / xmls[i].mydataseries[j].mydatapoints[k][1])**2
+                Edataseries = Edataseries + E
+            Edataseries = Edataseries / len(xmls[i].mydataseries[j].mydatapoints)
+            Exml = Exml + Edataseries
+        Exml = Exml / len(xmls[i].mydataseries)
+        Etotal = Etotal + Exml
+    Etotal = Etotal / len(xmls)
+    print('Nominal Etotal =', Etotal)
+
+    # calculation of the overall E value for each random sample
+    for s in range(stratas):
+        Etotal = 0
+        Exml = 0
+        Edataseries = 0
+        l = -1
+        for i in range(len(xmls)):
+            for j in range(len(xmls[i].mydataseries)):
+                for k in range(len(xmls[i].mydataseries[j].mydatapoints)):
+                    l = l + 1
+                    E = ((xmls[i].mydataseries[j].mydatapoints[k][3] - xmls[i].mydataseries[j].mydatapoints[k][2]) / xmls[i].mydataseries[j].mydatapoints[k][1])**2
+                    Edataseries = Edataseries + E
+                Edataseries = Edataseries / len(xmls[i].mydataseries[j].mydatapoints)
+                Exml = Exml + Edataseries
+            Exml = Exml / len(xmls[i].mydataseries)
+            Etotal = Etotal + Exml
+        Etotal = Etotal / len(xmls)
+        print(Etotal)
+                
 
 if __name__ == "__main__":
     main()
