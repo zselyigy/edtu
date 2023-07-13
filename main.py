@@ -38,7 +38,7 @@ def main():
 # constans fixed in the code
     my_filename_c = 'simulationResults_Shrestha2019'   # file name of the simulation results
     my_filename_s = 'sigmas'                           # file name of the estimated sigma values
-    stratas = 50                                     # number of stratas in the sampling
+    stratas = 10000                                     # number of stratas in the sampling
 
 # reading the estimated experimental sigmas file
     print('Reading estimated sigmas file', my_filename_s)
@@ -138,7 +138,7 @@ def main():
         for j in range(len(xmls[i].mydataseries)):
             for k in range(len(xmls[i].mydataseries[j].mydatapoints)):
                 l = l + 1
-                E = ((xmls[i].mydataseries[j].mydatapoints[k][4+random_numbers[s][l]] - xmls[i].mydataseries[j].mydatapoints[k][2]) / xmls[i].mydataseries[j].mydatapoints[k][1])**2
+                E = ((xmls[i].mydataseries[j].mydatapoints[k][3] - xmls[i].mydataseries[j].mydatapoints[k][2]) / xmls[i].mydataseries[j].mydatapoints[k][1])**2
                 Edataseries = Edataseries + E
             Edataseries = Edataseries / len(xmls[i].mydataseries[j].mydatapoints)
             Exml = Exml + Edataseries
@@ -148,6 +148,7 @@ def main():
     print('Nominal Etotal =', Etotal)
 
     # calculation of the overall E value for each random sample
+    E_file = open('.\calculatedEvalues.txt','w')
     for s in range(stratas):
         Etotal = 0
         Exml = 0
@@ -157,14 +158,16 @@ def main():
             for j in range(len(xmls[i].mydataseries)):
                 for k in range(len(xmls[i].mydataseries[j].mydatapoints)):
                     l = l + 1
-                    E = ((xmls[i].mydataseries[j].mydatapoints[k][3] - xmls[i].mydataseries[j].mydatapoints[k][2]) / xmls[i].mydataseries[j].mydatapoints[k][1])**2
+                    E = ((xmls[i].mydataseries[j].mydatapoints[k][4+random_numbers[s][l]] - xmls[i].mydataseries[j].mydatapoints[k][2]) / xmls[i].mydataseries[j].mydatapoints[k][1])**2
                     Edataseries = Edataseries + E
                 Edataseries = Edataseries / len(xmls[i].mydataseries[j].mydatapoints)
                 Exml = Exml + Edataseries
             Exml = Exml / len(xmls[i].mydataseries)
             Etotal = Etotal + Exml
         Etotal = Etotal / len(xmls)
-        print(Etotal)
+#        print(Etotal)
+        E_file.write(str(Etotal)+'\n')
+    E_file.close()
                 
 
 if __name__ == "__main__":
