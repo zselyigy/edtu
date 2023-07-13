@@ -38,7 +38,7 @@ def main():
 # constans fixed in the code
     my_filename_c = 'simulationResults_Shrestha2019'   # file name of the simulation results
     my_filename_s = 'sigmas'                           # file name of the estimated sigma values
-    stratas = 10000                                     # number of stratas in the sampling
+    stratas = 10                                     # number of stratas in the sampling
 
 # reading the estimated experimental sigmas file
     print('Reading estimated sigmas file', my_filename_s)
@@ -134,17 +134,23 @@ def main():
     Exml = 0
     Edataseries = 0
     l = -1
+    E_file = open('.\calculatedEvaluesbyPoints.txt','w')
+    S_file = open('.\sigmas_used.txt','w')
     for i in range(len(xmls)):
         for j in range(len(xmls[i].mydataseries)):
             for k in range(len(xmls[i].mydataseries[j].mydatapoints)):
                 l = l + 1
                 E = ((xmls[i].mydataseries[j].mydatapoints[k][3] - xmls[i].mydataseries[j].mydatapoints[k][2]) / xmls[i].mydataseries[j].mydatapoints[k][1])**2
+                E_file.write(xmls[i].xmlname + ' ' + xmls[i].myspecieslist[j] + ' ' + str(xmls[i].mydataseries[j].mydatapoints[0][0]) + ' ' + str(E) + '\n')
+                S_file.write(xmls[i].xmlname + ' ' + xmls[i].myspecieslist[j] + ' ' + str(xmls[i].mydataseries[j].mydatapoints[0][0]) + ' ' + str(xmls[i].mydataseries[j].mydatapoints[k][1]) + '\n')
                 Edataseries = Edataseries + E
             Edataseries = Edataseries / len(xmls[i].mydataseries[j].mydatapoints)
             Exml = Exml + Edataseries
         Exml = Exml / len(xmls[i].mydataseries)
         Etotal = Etotal + Exml
     Etotal = Etotal / len(xmls)
+    E_file.close()
+    S_file.close()
     print('Nominal Etotal =', Etotal)
 
     # calculation of the overall E value for each random sample
