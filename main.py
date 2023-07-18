@@ -38,7 +38,8 @@ def main():
 # constans fixed in the code
     my_filename_c = 'simulationResults_Shrestha2019'   # file name of the simulation results
     my_filename_s = 'sigmas'                           # file name of the estimated sigma values
-    stratas = 100000                                     # number of stratas in the sampling
+    stratas = 200                                     # number of stratas in the sampling
+    error_type = 'By data series and datasets'  # 'By datasets (XMLs)','By data series (profiles)','By data series and datasets'
 
 # reading the estimated experimental sigmas file
     print('Reading estimated sigmas file', my_filename_s)
@@ -122,10 +123,21 @@ def main():
 
     # generation of the random samples
     print('Random sample generation started.')
+    progress_value = numpy.empty(100,int)
+    progress_index = 0
+    no_print_steps = 20
+    for i in range(no_print_steps):
+        progress_value[i] = numpy.trunc((i + 1) * no_datapoints * stratas / no_print_steps)
+        
+    i = 0
     random_numbers = numpy.empty((stratas,no_datapoints),int)
     for s in range(stratas):
         for k in range(no_datapoints):
           random_numbers[s][k] = random.randint(0,9)
+          if progress_value[progress_index] == i:
+              progress_index = progress_index + 1
+              print(str(int(progress_index * 100 / no_print_steps))+'%')
+          i = i + 1
     print('Random sample generation finished.')
 
 
