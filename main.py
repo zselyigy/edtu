@@ -38,7 +38,7 @@ def main():
 # constans fixed in the code
     my_filename_c = 'simulationResults_Shrestha2019'   # file name of the simulation results
     my_filename_s = 'sigmas'                           # file name of the estimated sigma values
-    stratas = 10                                     # number of stratas in the sampling
+    stratas = 100000                                     # number of stratas in the sampling
 
 # reading the estimated experimental sigmas file
     print('Reading estimated sigmas file', my_filename_s)
@@ -176,7 +176,7 @@ def main():
             Etotal = Etotal + Exml
             Exml = 0
         Etotal = Etotal / len(xmls)
-        print(Etotal)
+#        print(Etotal)
         E_file.write(str(Etotal)+'\n')
     E_file.close()
                 
