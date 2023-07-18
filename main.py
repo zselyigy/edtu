@@ -51,7 +51,7 @@ def main():
                 mystr1 = mystr1.strip()
                 mystr2 = line[41:55]
                 mystr2 = mystr2.strip()
-                mydata = [mystr1, int(line[11:39]), mystr2, float(line[67:76])]
+                mydata = [mystr1, int(line[11:39]), mystr2, float(line[73:83])]
                 sigmas.append(mydata)
     results_file.close()
     print('Number of datapoints in the sigmas file: ', len(sigmas))
@@ -141,8 +141,8 @@ def main():
             for k in range(len(xmls[i].mydataseries[j].mydatapoints)):
                 l = l + 1
                 E = ((xmls[i].mydataseries[j].mydatapoints[k][3] - xmls[i].mydataseries[j].mydatapoints[k][2]) / xmls[i].mydataseries[j].mydatapoints[k][1])**2
-                E_file.write(xmls[i].xmlname + ' ' + xmls[i].myspecieslist[j] + ' ' + str(xmls[i].mydataseries[j].mydatapoints[0][0]) + ' ' + str(E) + '\n')
-                S_file.write(xmls[i].xmlname + ' ' + xmls[i].myspecieslist[j] + ' ' + str(xmls[i].mydataseries[j].mydatapoints[0][0]) + ' ' + str(xmls[i].mydataseries[j].mydatapoints[k][1]) + '\n')
+                E_file.write(xmls[i].xmlname + ' ' + xmls[i].myspecieslist[j] + ' ' + str(xmls[i].mydataseries[j].mydatapoints[k][0]) + ' ' + str(E) + '\n')
+                S_file.write(xmls[i].xmlname + ' ' + xmls[i].myspecieslist[j] + ' ' + str(xmls[i].mydataseries[j].mydatapoints[k][0]) + ' ' + str(xmls[i].mydataseries[j].mydatapoints[k][1]) + '\n')
                 Edataseries = Edataseries + E
             Edataseries = Edataseries / len(xmls[i].mydataseries[j].mydatapoints)
             Exml = Exml + Edataseries
@@ -165,13 +165,14 @@ def main():
                 for k in range(len(xmls[i].mydataseries[j].mydatapoints)):
                     l = l + 1
                     E = ((xmls[i].mydataseries[j].mydatapoints[k][4+random_numbers[s][l]] - xmls[i].mydataseries[j].mydatapoints[k][2]) / xmls[i].mydataseries[j].mydatapoints[k][1])**2
+#                    E_file.write(xmls[i].xmlname + ' ' + xmls[i].myspecieslist[j] + ' ' + str(xmls[i].mydataseries[j].mydatapoints[k][0]) + ' ' + str(E) + '\n')
                     Edataseries = Edataseries + E
                 Edataseries = Edataseries / len(xmls[i].mydataseries[j].mydatapoints)
                 Exml = Exml + Edataseries
             Exml = Exml / len(xmls[i].mydataseries)
             Etotal = Etotal + Exml
         Etotal = Etotal / len(xmls)
-#        print(Etotal)
+        print(Etotal)
         E_file.write(str(Etotal)+'\n')
     E_file.close()
                 
