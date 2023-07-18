@@ -146,8 +146,10 @@ def main():
                 Edataseries = Edataseries + E
             Edataseries = Edataseries / len(xmls[i].mydataseries[j].mydatapoints)
             Exml = Exml + Edataseries
+            Edataseries = 0
         Exml = Exml / len(xmls[i].mydataseries)
         Etotal = Etotal + Exml
+        Exml = 0
     Etotal = Etotal / len(xmls)
     E_file.close()
     S_file.close()
@@ -169,8 +171,10 @@ def main():
                     Edataseries = Edataseries + E
                 Edataseries = Edataseries / len(xmls[i].mydataseries[j].mydatapoints)
                 Exml = Exml + Edataseries
+                Edataseries = 0                
             Exml = Exml / len(xmls[i].mydataseries)
             Etotal = Etotal + Exml
+            Exml = 0
         Etotal = Etotal / len(xmls)
         print(Etotal)
         E_file.write(str(Etotal)+'\n')
