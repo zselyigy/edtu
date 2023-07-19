@@ -55,7 +55,7 @@ def main():
                     stratas = int(mystr2)
                 # type of the error used; valid values 'By datasets (XMLs)','By data series (profiles)','By data series and datasets'
                 case "error type:":
-                    stratas = mystr2
+                    error_type = mystr2
 
 # constans fixed in the code
 #    my_filename_c = 'simulationResults_Shrestha2019'   # file name of the simulation results
@@ -186,7 +186,10 @@ def main():
         Exml = Exml / len(xmls[i].mydataseries)
         Etotal = Etotal + Exml
         Exml = 0
-    Etotal = Etotal / len(xmls)
+    if error_type == 'By datasets (XMLs)' or error_type == 'By data series and datasets':
+        Etotal = Etotal / len(xmls)
+#    else:
+        
     print('Nominal E value calculation finished.')
     E_file.close()
     S_file.close()
