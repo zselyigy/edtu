@@ -35,11 +35,33 @@ class xmlfile():
 
 def main():
     print('edtu program started.')
+# reading the config file
+    print('reading config file.')
+    with open('.\config.txt','r') as C_file:
+        for line in C_file:
+            mystr1 = line[0:29]
+            mystr1 = mystr1.strip()
+            mystr2 = line[29:79]
+            mystr2 = mystr2.strip()
+            match mystr1:
+                # file name of the simulation results
+                case "simulation result file:":
+                    my_filename_c = mystr2
+                # file name of the estimated sigma values
+                case "sigma file:":
+                    my_filename_s = mystr2
+                # number of stratas in the sampling
+                case "number of random samples:":
+                    stratas = int(mystr2)
+                # type of the error used; valid values 'By datasets (XMLs)','By data series (profiles)','By data series and datasets'
+                case "error type:":
+                    stratas = mystr2
+
 # constans fixed in the code
-    my_filename_c = 'simulationResults_Shrestha2019'   # file name of the simulation results
-    my_filename_s = 'sigmas'                           # file name of the estimated sigma values
-    stratas = 2000                                     # number of stratas in the sampling
-    error_type = 'By data series and datasets'  # 'By datasets (XMLs)','By data series (profiles)','By data series and datasets'
+#    my_filename_c = 'simulationResults_Shrestha2019'   # file name of the simulation results
+#    my_filename_s = 'sigmas'                           # file name of the estimated sigma values
+#    stratas = 100                                     # number of stratas in the sampling
+#    error_type = 'By data series and datasets'  # 'By datasets (XMLs)','By data series (profiles)','By data series and datasets'
 
 # reading the estimated experimental sigmas file
     print('Reading estimated sigmas file', my_filename_s)
@@ -202,8 +224,8 @@ def main():
         Etotal = Etotal / len(xmls)
 #        print(Etotal)
         E_file.write(str(Etotal)+'\n')
-    E_file.close()
     print('Random sampled E value calculation finished. Data writing to file may take some more time.')
+    E_file.close()
 
                 
 

@@ -1,0 +1,4 @@
+simulation result file:      simulationResults_Shrestha2019
+sigma file:                  sigmas
+number of random samples:    100
+error type:                  By data series and datasets'                           # 'By datasets (XMLs)','By data series (profiles)','By data series and datasets'
