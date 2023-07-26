@@ -1,5 +1,3 @@
-aaasimulation result file:      simulationResults_Shrestha2019
 E value file:                E_values_Shrestha2019.txt
-aaasigma file:                  sigmas
-number of random samples:    100
+number of random samples:    300000
 error type:                  By data series and datasets'                           # 'By datasets (XMLs)','By data series (profiles)','By data series and datasets'
