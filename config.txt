@@ -1,3 +1,5 @@
 E value file:                E_values_Shrestha2019.txt
-number of random samples:    300000
+number of random samples:    100
 error type:                  By data series and datasets'                           # 'By datasets (XMLs)','By data series (profiles)','By data series and datasets'
+random number file:          random_numbers.txt
+random numbers:              read                                                   # generate, read

@@ -35,10 +35,15 @@ class xmlfile():
 
 def main():
     print('edtu program started.')
+    no_print_steps = 20
+    progress_value = numpy.empty(no_print_steps,int)
+
 # reading the config file
     noc = True
     nos = True
     noe = True
+    nor = True
+    rndgener = True
     print('reading config file.')
     with open('.\config.txt','r') as C_file:
         for line in C_file:
@@ -62,6 +67,10 @@ def main():
                 # type of the error used; valid values 'By datasets (XMLs)','By data series (profiles)','By data series and datasets'
                 case "error type:":
                     error_type = mystr2
+                case "random number file:":
+                    my_filename_r = mystr2
+                case "random numbers:":
+                    rand_num_behav = mystr2
         try:
             print('Simulation result file name:', my_filename_c)
         except:
@@ -89,6 +98,30 @@ def main():
                 else:
                     print('No E value file and simulation result file, not enough information. Please provide one of them.')
                     return
+        try:
+            print('Random number file name:', my_filename_r)
+        except:
+            print('No random number file name is given.')
+            nor = False
+        try:
+            match rand_num_behav:
+                case 'generate':
+                    print('The random generator will generate the random numbers.')
+                case 'read':
+                    print('The random generator will read the random numbers.')
+                    rndgener = False
+                case default:
+                    print('The specified random number generator behaviour is unknown, the random numbers will be generated.')
+        except:
+            print('Behaviour is not defined in the config file, the random numbers will be generated.')
+    if not (rndgener or nor):   # Fatal error if the random numbers should be read, but no random number file name is given
+        print('The random numbers should be read, but no random number file name is given: fatal error.')
+        return
+    if rndgener and not nor:   # Random numbers are generated, but no file name is given: use the default file name
+        my_filename_r = 'random_numbers.txt'
+        print('Random numbers are generated, but no file name is given: use the default file name (',my_filename_r,').')
+
+
     if noe:
         no_xmls = 0
         xmls = []
@@ -232,25 +265,43 @@ def main():
         if no_datapoints != len(sigmas):
             print('Different number of datapoints in the simulation results and the sigmas files.')
 
-    # generation of the random samples
-    print('Random sample generation started.')
-    no_print_steps = 20
-    progress_value = numpy.empty(no_print_steps,int)
-    progress_index = 0
-    for i in range(no_print_steps):
-        progress_value[i] = numpy.trunc((i + 1) * no_datapoints * stratas / no_print_steps)
-        
-    i = 0
-    random_numbers = numpy.empty((stratas,no_datapoints),int)
-    for s in range(stratas):
-        for k in range(no_datapoints):
-          random_numbers[s][k] = random.randint(0,9)
-          if progress_value[progress_index] == i:
-              progress_index = progress_index + 1
-              print(str(int(progress_index * 100 / no_print_steps))+'%')
-          i = i + 1
-    print('Random sample generation finished.')
-
+    # reading or generation of the random samples
+    if rndgener:
+        print('Random sample generation started.')
+        R_file = open(my_filename_r ,'w')
+        progress_index = 0
+        for i in range(no_print_steps):
+            progress_value[i] = numpy.trunc((i + 1) * no_datapoints * stratas / no_print_steps)
+            
+        i = 0
+        random_numbers = numpy.empty((stratas,no_datapoints),int)
+        for s in range(stratas):
+            for k in range(no_datapoints):
+                random_numbers[s][k] = random.randint(0,9)
+                R_file.write(str(random_numbers[s][k])+' ')
+                if progress_value[progress_index] == i:
+                    progress_index = progress_index + 1
+                    print(str(int(progress_index * 100 / no_print_steps))+'%')
+                i = i + 1
+            R_file.write('\n')
+        print('Random sample generation finished.')
+    else:
+        print('Random samples are read from file', my_filename_r)
+        j = 0
+        random_numbers = numpy.empty((stratas,no_datapoints),int)
+        with open(my_filename_r,'r') as results_file:
+            for line in results_file:
+                result_string = line.split(' ')
+                k = 0
+                for i in result_string:
+                    if i != '\n':
+                        random_numbers[j][k] =int(i)
+                        k = k + 1
+                j = j + 1
+        print(j, 'random samples were read.')
+        if j != stratas:
+            print('The number of stratas (',stratas,') is not equal to the number of random numbers read. Fatal error.')
+            return
 
     # calculation of the overall E value for the nominal values
     print('Nominal E value calculation started.')
