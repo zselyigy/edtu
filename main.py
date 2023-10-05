@@ -20,6 +20,8 @@ class xmlfile():
         self.xmlname = name
         self.myspecieslist = []
         self.mydataseries = []
+        self.myrandomnumbers = []
+        self.myrandomnumbersindex = []
 
     def addDataPoint(self, mydata):
         try:
@@ -299,8 +301,10 @@ def main():
                         k = k + 1
                 j = j + 1
         print(j, 'random samples were read.')
-        if j != stratas:
-            print('The number of stratas (',stratas,') is not equal to the number of random numbers read. Fatal error.')
+#        if j != stratas:
+        if j < stratas:
+#            print('The number of stratas (',stratas,') is not equal to the number of random numbers read. Fatal error.')
+            print('The number of stratas (',stratas,') is greater than the number of random numbers read. Fatal error.')
             return
 
     # calculation of the overall E value for the nominal values
@@ -356,10 +360,16 @@ def main():
         for i in range(len(xmls)):
             for j in range(len(xmls[i].mydataseries)):
                 for k in range(len(xmls[i].mydataseries[j].mydatapoints)):
+                    try:
+                        rndindex = xmls[i].myrandomnumbersindex.index(xmls[i].mydataseries[j].mydatapoints[k][0])
+                    except ValueError:
+                        xmls[i].myrandomnumbersindex.append(xmls[i].mydataseries[j].mydatapoints[k][0])
+                        rndindex = xmls[i].myrandomnumbersindex.index(xmls[i].mydataseries[j].mydatapoints[k][0])
+                        xmls[i].myrandomnumbers.append(random_numbers[s][l])
                     if noe:   # if we already have the E values just read them
-                        E = xmls[i].mydataseries[j].mydatapoints[k][4+random_numbers[s][l]]
+                        E = xmls[i].mydataseries[j].mydatapoints[k][4+xmls[i].myrandomnumbers[rndindex]]
                     else:     # if we have c and sigma data we have to calculate the E values
-                        E = ((xmls[i].mydataseries[j].mydatapoints[k][4+random_numbers[s][l]] - xmls[i].mydataseries[j].mydatapoints[k][2]) / xmls[i].mydataseries[j].mydatapoints[k][1])**2
+                        E = ((xmls[i].mydataseries[j].mydatapoints[k][4+xmls[i].myrandomnumbers[rndindex]] - xmls[i].mydataseries[j].mydatapoints[k][2]) / xmls[i].mydataseries[j].mydatapoints[k][1])**2
 #                    E_file.write(xmls[i].xmlname + ' ' + xmls[i].myspecieslist[j] + ' ' + str(xmls[i].mydataseries[j].mydatapoints[k][0]) + ' ' + str(E) + '\n')
                     Edataseries = Edataseries + E
                     l = l + 1
@@ -375,6 +385,10 @@ def main():
         Etotal = Etotal / len(xmls)
 #        print(Etotal)
         E_file.write(str(Etotal)+'\n')
+        # clear the stored random numbers
+        for i in range(len(xmls)):
+            xmls[i].myrandomnumbersindex = []
+            xmls[i].myrandomnumbers = []
     print('Random sampled E value calculation finished. Data writing to file may take some more time.')
     E_file.close()
 
