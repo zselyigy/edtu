@@ -2,11 +2,32 @@ import numpy
 import random
 
 class dataseries():
+    """A class to store and manipulate data series for a given species.
+
+    Attributes:
+        speciesname (str): The name of the species.
+        mydatapoints (list): A list of lists containing the data points for the species.
+    """
     def __init__(self, speciesname):
+        """Initialize the dataseries object with a species name and an empty list of data points.
+
+        Args:
+            speciesname (str): The name of the species.
+        """
         self.speciesname = speciesname
         self.mydatapoints = []
 
     def add_datapoint(self, data):
+        """Add a new data point to the list of data points.
+
+        Args:
+            data (list): A list of 14 elements representing a data point. The structure of the list is:
+                0 point number
+                1 sigma value
+                2 experimental value
+                3 nominal value
+                4-13 the ten T varied value
+        """
         # structure of one record for each datapoint
         #  0 point number
         #  1 sigma value
@@ -16,7 +37,21 @@ class dataseries():
         self.mydatapoints.append(data)
 
 class xmlfile():
+    """A class to store and manipulate XML data for different species.
+
+    Attributes:
+        xmlname (str): The name of the XML file.
+        myspecieslist (list): A list of strings containing the names of the species.
+        mydataseries (list): A list of dataseries objects containing the data series for each species.
+        myrandomnumbers (list): A list of floats containing random numbers generated for each data point.
+        myrandomnumbersindex (list): A list of integers containing the indices of the random numbers for each data point.
+    """
     def __init__(self, name):
+        """Initialize the xmlfile object with a name and empty lists of attributes.
+
+        Args:
+            name (str): The name of the XML file.
+        """
         self.xmlname = name
         self.myspecieslist = []
         self.mydataseries = []
@@ -24,6 +59,15 @@ class xmlfile():
         self.myrandomnumbersindex = []
 
     def addDataPoint(self, mydata):
+        """Add a new data point to the corresponding data series for a given species.
+           Opens a new list if the species is not already in the list.
+
+        Args:
+            mydata (list): A list of 15 elements representing a data point. The structure of the list is:
+                0 point number
+                1 species name
+                2-15 data series values
+        """
         try:
             speciesindex = self.myspecieslist.index(mydata[1])
         except ValueError:
