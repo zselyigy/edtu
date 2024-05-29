@@ -191,6 +191,9 @@ def main():
                     for i in result_string:
                         if i != '':
                             result_string_2.append(i.strip())
+                    if result_string_2[0] == '':
+                        print(f'Reading of {my_filename_e} finished at line number {j}, because the next line is empty.')
+                        break
                     # structure of the adddata for each datapoint
                     #  0 xml name
                     #  1 species
